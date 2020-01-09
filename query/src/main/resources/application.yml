@@ -1,0 +1,43 @@
+#-----------------------------------------------------------------------------------------------
+# INFORMATION
+#-----------------------------------------------------------------------------------------------
+info:
+  service_name: Demo Event Driven Query
+  description: Demo Event Driven Query
+
+server:
+  port: 8090
+
+#-----------------------------------------------------------------------------------------------
+# KAFKA
+#-----------------------------------------------------------------------------------------------
+spring.cloud.stream:
+  kafka.binder:
+    autoCreateTopics: false
+    autoAddPartitions: true
+    healthTimeout: 10
+    requiredAcks: 1
+    minPartitionCount: 1
+    replicationFactor: 1
+    configuration:
+      auto.offset.reset: earliest
+
+  bindings:
+    data_modified_event_channel:
+      destination: synchronization.data-modified-events
+      content-type: application/json
+      binder: kafka
+
+spring.kafka:
+  bootstrap-servers: 10.85.42.98:9092
+  producer.compression-type: gzip
+
+#------------------------------
+# LOGGING
+#------------------------------
+logging:
+  level:
+    root: INFO
+    com.tui.architecture.eventdriven.query.core.kafka: DEBUG
+    org.springframework: INFO
+    io.swagger.models.*: ERROR
