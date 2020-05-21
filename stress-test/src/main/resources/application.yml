@@ -1,0 +1,74 @@
+#-----------------------------------------------------------------------------------------------
+# INFORMATION
+#-----------------------------------------------------------------------------------------------
+info:
+  service_name: Stress test
+  description: Stress test for Event Driven System
+
+server:
+  port: 8100
+
+#-----------------------------------------------------------------------------------------------
+# DATABASE
+#-----------------------------------------------------------------------------------------------
+spring.datasource:
+  postgres:
+    jdbcUrl: jdbc:postgresql://localhost:5432/event-driven
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    pool-name: HikariPool
+    connection-timeout: 20000
+    minimum-idle: 5
+    maximum-pool-size: 12
+    idle-timeout: 300000
+    max-lifetime: 1200000
+    auto-commit: true
+
+# JPA specific configs
+spring.jpa:
+  hibernate.connection.provider_class: org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+  properties.hibernate:
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    show_sql: false
+    format_sql: true
+    use_sql: true
+    hibernate.dialect: true
+    id.new_generator_mappings: false
+    search.autoregister_listeners: false
+    bytecode.use_reflection_optimizer: false
+    jdbc.lob.non_contextual_creation: true
+
+#spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation: true
+
+#-----------------------------------------------------------------------------------------------
+# KAFKA
+#-----------------------------------------------------------------------------------------------
+spring.cloud.stream:
+  kafka.binder:
+    autoCreateTopics: false
+    autoAddPartitions: true
+    healthTimeout: 10
+    requiredAcks: 1
+    minPartitionCount: 1
+    replicationFactor: 1
+
+  bindings:
+    data_modified_event_channel:
+      destination: synchronization.data-modified-events
+      content-type: application/json
+      binder: kafka
+
+spring.kafka:
+  bootstrap-servers: 10.85.42.98:9092
+  producer.compression-type: gzip
+
+#------------------------------
+# LOGGING
+#------------------------------
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    io.swagger.models.*: ERROR
